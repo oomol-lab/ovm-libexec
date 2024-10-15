@@ -1,8 +1,12 @@
 #/bin/sh
 
-set -e
+set -ex
 
 export WORK=`pwd`
+
+if [ -z "$CODESIGN_IDENTITY" ]; then
+  export CODESIGN_IDENTITY="-"
+fi
 
 rm -rf ./out
 mkdir -p ./out
@@ -44,4 +48,12 @@ codesign --force --sign $CODESIGN_IDENTITY --timestamp --entitlements krunkit.en
 find $WORK/out -name "*.dylib" -type f -exec sh -c "echo 'Signing {}...'; codesign --force --sign $CODESIGN_IDENTITY --timestamp {}" ';'
 
 # pack
-tar -czvf ./libexec-$GOOS-$GOARCH.tar.gz -C ./out/ .
+echo "Packing..."
+cd $WORK/out
+tar -czvf ./libexec-$GOOS-$GOARCH.tar.gz .
+
+# generate sha256
+cd $WORK/out
+echo "Generating sha256..."
+shasum -a 256 ./* > sha256.txt
+cat ./sha256.txt
