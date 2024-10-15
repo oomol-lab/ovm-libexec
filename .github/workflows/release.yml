@@ -18,6 +18,18 @@ jobs:
           aws configure set aws_secret_access_key ${{ secrets.R2_OOMOL_STATIC_S3_SK }}
           aws configure set region auto
 
+      - name: Setup Codesign
+        run: |
+          echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
+          security create-keychain -p action build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p action build.keychain
+          security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PWD -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k action build.keychain
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
