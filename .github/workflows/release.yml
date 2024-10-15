@@ -64,7 +64,7 @@ jobs:
         with:
           files: |
             ./out/*
-          body_path: ./sha256.txt
+          body_path: ./out/sha256.txt
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
