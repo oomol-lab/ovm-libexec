@@ -59,12 +59,18 @@ jobs:
             s3://oomol-static/ovm-resources/libexec/$RELEASE_VERSION \
             --recursive --exclude "*" --include "*.tar.gz"
 
+      - name: Gen Release Notes
+        run: |
+          echo '```' > ./release_notes.md
+          cat ./out/sha256.txt >> ./release_notes.md
+          echo '```' >> ./release_notes.md
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             ./out/*
-          body_path: ./out/sha256.txt
+          body_path: ./release_notes.md
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
