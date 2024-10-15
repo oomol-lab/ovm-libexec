@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Configure R2 Credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.R2_OOMOL_STATIC_S3_AK }}
+          aws configure set aws_secret_access_key ${{ secrets.R2_OOMOL_STATIC_S3_SK }}
+          aws configure set region auto
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Goenv
+        run: |
+          brew install goenv
+
+      - name: Exec
+        run: |
+          ./main.sh
+        env:
+          CODESIGN_IDENTITY: ${{ secrets.MACOS_CODESIGN_IDENTITY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Hash
+        run: sha256sums ./out/* > sha256.txt
+
+      - name: Get Tag Name
+        shell: bash
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Upload To R2
+        shell: bash
+        run: |
+          aws s3 cp \
+            --endpoint-url ${{ secrets.R2_OOMOL_STATIC_S3_ENDPOINT }} \
+            ./out \
+            s3://oomol-static/ovm-resources/libexec/$RELEASE_VERSION \
+            --recursive --exclude "*" --include "*.tar.gz"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./*.tar.gz
+            ./out/*
+            ./sha256.txt
+          body_path: ./sha256.txt
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
