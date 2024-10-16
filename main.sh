@@ -50,7 +50,7 @@ find $WORK/out -name "*.dylib" -type f -exec sh -c "echo 'Signing {}...'; codesi
 # pack
 echo "Packing..."
 cd $WORK/out
-tar -czvf ./libexec-$GOOS-$GOARCH.tar.gz .
+tar --no-mac-metadata -czvf ./libexec-$GOOS-$GOARCH.tar.gz .
 
 # generate sha256
 cd $WORK/out
