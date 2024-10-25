@@ -40,12 +40,12 @@ cd $WORK
 
 # codesign
 echo "Signing gvproxy..."
-codesign --force --sign $CODESIGN_IDENTITY --timestamp $WORK/out/gvproxy
+codesign --force --sign $CODESIGN_IDENTITY --options=runtime --timestamp $WORK/out/gvproxy
 
 echo "Signing krunkit..."
-codesign --force --sign $CODESIGN_IDENTITY --timestamp --entitlements krunkit.entitlements $WORK/out/krunkit
+codesign --force --sign $CODESIGN_IDENTITY --options=runtime --timestamp --entitlements krunkit.entitlements $WORK/out/krunkit
 
-find $WORK/out -name "*.dylib" -type f -exec sh -c "echo 'Signing {}...'; codesign --force --sign $CODESIGN_IDENTITY --timestamp {}" ';'
+find $WORK/out -name "*.dylib" -type f -exec sh -c "echo 'Signing {}...'; codesign --force --sign $CODESIGN_IDENTITY --options=runtime --timestamp {}" ';'
 
 # pack
 echo "Packing..."
