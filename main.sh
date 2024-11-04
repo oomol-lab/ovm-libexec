@@ -45,6 +45,7 @@ codesign --force --sign $CODESIGN_IDENTITY --options=runtime --timestamp $WORK/o
 echo "Signing krunkit..."
 codesign --force --sign $CODESIGN_IDENTITY --options=runtime --timestamp --entitlements krunkit.entitlements $WORK/out/krunkit
 
+find $WORK/out -name "*.dylib" -type f -exec sh -c "echo 'Set {} permission to 755'; chmod 755 {}" ';'
 find $WORK/out -name "*.dylib" -type f -exec sh -c "echo 'Signing {}...'; codesign --force --sign $CODESIGN_IDENTITY --options=runtime --timestamp {}" ';'
 
 # pack
