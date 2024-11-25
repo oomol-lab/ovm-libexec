@@ -31,7 +31,7 @@ cd $WORK
 rm -rf ./krunkit
 mkdir -p krunkit
 cd krunkit
-gh release download v0.1.3 -R containers/krunkit --pattern "krunkit-*" --clobber
+gh release download v0.1.4 -R containers/krunkit --pattern "krunkit-*" --clobber
 tar -zxvf krunkit-*.tgz -C ./
 mv bin/krunkit $WORK/out/krunkit
 mv lib/* $WORK/out/
