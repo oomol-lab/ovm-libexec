@@ -18,7 +18,7 @@ echo "Building gvp..."
 rm -rf gvisor-tap-vsock
 git clone https://github.com/containers/gvisor-tap-vsock.git
 cd gvisor-tap-vsock
-git checkout v0.7.5
+git checkout v0.8.1
 eval "$(goenv init -)"
 goenv install 1.22.0 -s
 goenv shell 1.22.0
