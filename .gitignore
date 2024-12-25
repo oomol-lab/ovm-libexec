@@ -9,3 +9,4 @@ $RECYCLE.BIN/
 gvisor-tap-vsock
 krunkit
 *.tar.gz
+*_temp
