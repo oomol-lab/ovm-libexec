@@ -56,7 +56,7 @@ jobs:
         run: |
           aws s3 cp \
             --endpoint-url ${{ secrets.R2_OOMOL_STATIC_S3_ENDPOINT }} \
-            ./out \
+            ./ \
             s3://oomol-static/ovm-resources/libexec/$RELEASE_VERSION \
             --recursive --exclude "*" --include "*.tar.gz"
 
