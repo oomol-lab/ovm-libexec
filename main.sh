@@ -1,11 +1,20 @@
 #! /usr/bin/env bash
-
 set -e
+
+_write_rpath(){
+	target_bin="$1"
+	echo "write_rpath to $target_bin"
+	cd "$workspace/out"
+	# befor add_rpath, the binary need ad-hoc codesign to relink the binary (segname __LINKEDIT)
+	codesign --force --sign - "$target_bin"
+	install_name_tool -add_rpath @executable_path/./ "$target_bin"
+}
 
 _get_krunkit() {
 	cd "$workspace" 
-	mkdir -p "$workspace/krunkit_temp" 
-	cd "$workspace/krunkit_temp"
+	rm -rf krunkit_temp
+	mkdir -p krunkit_temp
+	cd krunkit_temp
 	gh release download v0.1.4 -R containers/krunkit --pattern "krunkit-*" --clobber
 	tar -zxvf krunkit-*.tgz -C ./
 	mv bin/* lib/* "$workspace/out"
@@ -75,6 +84,9 @@ build_darwin_arm64() {
 	echo "Download krunkit"
 	_get_krunkit
 
+	echo "Add rpath to krunkit"
+	_write_rpath krunkit
+
 	echo "Do codesign"
 	_do_codesign
 
@@ -98,6 +110,7 @@ build_darwin_amd64() {
 	echo "Packup output"
 	_pack_output
 }
+
 
 main() {
 	target_arch=$1
