@@ -15,7 +15,7 @@ _get_krunkit() {
 	rm -rf krunkit_temp
 	mkdir -p krunkit_temp
 	cd krunkit_temp
-	gh release download v0.1.4 -R containers/krunkit --pattern "krunkit-*" --clobber
+	gh release download v0.2.1 -R containers/krunkit --pattern "krunkit-*" --clobber
 	tar -zxvf krunkit-*.tgz -C ./
 	mv bin/* lib/* "$workspace/out"
 	cd "$workspace"
@@ -38,7 +38,7 @@ _build_gvproxy() {
 	rm -rf gvisor-tap-vsock_temp
 	git clone https://github.com/containers/gvisor-tap-vsock.git ./gvisor-tap-vsock_temp
 	cd ./gvisor-tap-vsock_temp
-	git checkout v0.8.1
+	git checkout v0.8.6
 	make gvproxy
 	mv ./bin/gvproxy "$workspace/out/gvproxy"
 	cd "$workspace"
