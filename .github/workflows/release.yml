@@ -58,7 +58,7 @@ jobs:
             --endpoint-url ${{ secrets.R2_OOMOL_STATIC_S3_ENDPOINT }} \
             ./ \
             s3://oomol-static/ovm-resources/libexec/$RELEASE_VERSION \
-            --recursive --exclude "*" --include "*.tar.gz"
+            --recursive --exclude "*" --include "*.tar.gz" --checksum-algorithm CRC32 --debug
 
       - name: Gen Release Notes
         run: |
