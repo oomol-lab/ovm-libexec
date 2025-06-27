@@ -5,9 +5,14 @@ _write_rpath(){
 	target_bin="$1"
 	echo "write_rpath to $target_bin"
 	cd "$workspace/out"
+
 	# befor add_rpath, the binary need ad-hoc codesign to relink the binary (segname __LINKEDIT)
 	codesign --force --sign - "$target_bin"
 	install_name_tool -add_rpath @executable_path/./ "$target_bin"
+
+	# delete existing rpaths to ensure dynamic library loading from the correct path
+	install_name_tool -delete_rpath /opt/homebrew/lib "$target_bin"
+	install_name_tool -delete_rpath /opt/podman/lib "$target_bin"
 }
 
 _get_krunkit() {
